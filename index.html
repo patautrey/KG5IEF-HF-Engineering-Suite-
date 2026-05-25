@@ -19,8 +19,10 @@
 
       <div class="panel">
         <h3>Band & Frequency</h3>
+
         <label for="band_select">Band</label>
         <select id="band_select">
+          <option value="custom">Custom Frequency</option>
           <option value="3.5">80 m (3.5 MHz)</option>
           <option value="5.3305">60 m (5.3305 MHz)</option>
           <option value="7.0">40 m (7.0 MHz)</option>
@@ -34,7 +36,7 @@
         </select>
 
         <label for="custom_freq_mhz">Custom Frequency (MHz)</label>
-        <input id="custom_freq_mhz" type="number" step="0.001" placeholder="Leave blank to use band center">
+        <input id="custom_freq_mhz" type="number" step="0.001" placeholder="e.g. 14.272">
       </div>
 
       <div class="panel">
