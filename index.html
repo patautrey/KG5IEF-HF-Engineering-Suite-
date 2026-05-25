@@ -1,1 +1,66 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KG5IEF HF Engineering Suite</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="app-header">
+<h1>KG5IEF HF Engineering Suite</h1>
+<h2>ERP • Antenna • Propagation Lab</h2>
+</header>
+<main class="layout-grid">
+<section class="column left-column">
+<div class="panel">
+<h3>Operating Parameters</h3>
+<div class="param"><label for="antenna_type">Antenna Type</label><select id="antenna_type"></select></div>
+<div class="param"><label for="band_mhz">Band (MHz)</label><input id="band_mhz" type="number" value="14" step="0.1"></div>
+<div class="param"><label for="tx_power">TX Power (W)</label><input id="tx_power" type="number" value="100" step="1"></div>
+<div class="param"><label for="antenna_gain">Antenna Gain (dBi)</label><input id="antenna_gain" type="number" value="0" step="0.1"></div>
+<div class="param"><label for="coax_loss">Coax Loss (dB)</label><input id="coax_loss" type="number" value="1.5" step="0.1"></div>
+</div>
+<div class="panel">
+<h3>Array & Environment</h3>
+<div class="param"><label for="reflector_count">Reflectors</label><input id="reflector_count" type="number" value="0" min="0"></div>
+<div class="param"><label for="director_count">Directors</label><input id="director_count" type="number" value="0" min="0"></div>
+<div class="param"><label for="radial_count">Radials</label><input id="radial_count" type="number" value="4" min="0"></div>
+<div class="param"><label for="elevated_height">Elevated Radials Height (m)</label><input id="elevated_height" type="number" value="0" min="0" step="0.5"></div>
+<div class="param checkbox-row"><label for="seaside_mode">Seaside / Saltwater</label><input id="seaside_mode" type="checkbox"></div>
+<div class="param"><label for="time_of_day">Time of Day</label><select id="time_of_day"><option value="day">Day</option><option value="night">Night</option><option value="grayline">Grayline</option></select></div>
+</div>
+<div class="panel"><button id="calculate_btn" class="primary-btn">Calculate</button></div>
+</section>
+<section class="column center-column">
+<div class="panel"><h3>Azimuth Pattern</h3><canvas id="azimuth_plot" width="320" height="240"></canvas></div>
+<div class="panel"><h3>Elevation Pattern</h3><canvas id="elevation_plot" width="320" height="240"></canvas></div>
+<div class="panel"><h3>3D Donut (Conceptual)</h3><canvas id="donut_plot" width="320" height="240"></canvas></div>
+</section>
+<section class="column right-column">
+<div class="panel">
+<h3>ERP Summary</h3>
+<div class="summary-row"><span>Band:</span><span id="summary_band">—</span></div>
+<div class="summary-row"><span>ERP (W):</span><span id="summary_erp_w">—</span></div>
+<div class="summary-row"><span>ERP (dBW):</span><span id="summary_erp_dbw">—</span></div>
+<div class="summary-row"><span>ERP (dBm):</span><span id="summary_erp_dbm">—</span></div>
+<div class="summary-row"><span>Effective Gain (env):</span><span id="summary_eff_gain">—</span></div>
+</div>
+<div class="panel">
+<h3>Cut Lengths (1/4λ)</h3>
+<div class="summary-row"><span>80 m:</span><span id="cut_80m">—</span></div>
+<div class="summary-row"><span>40 m:</span><span id="cut_40m">—</span></div>
+<div class="summary-row"><span>20 m:</span><span id="cut_20m">—</span></div>
+<div class="summary-row"><span>15 m:</span><span id="cut_15m">—</span></div>
+<div class="summary-row"><span>10 m:</span><span id="cut_10m">—</span></div>
+<div class="summary-row"><span>6 m:</span><span id="cut_6m">—</span></div>
+</div>
+<div class="panel">
+<h3>Antenna Geometry (Preview)</h3>
+<p id="geometry_summary">Select an antenna type and calculate to see geometry details.</p>
+</div>
+</section>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>
