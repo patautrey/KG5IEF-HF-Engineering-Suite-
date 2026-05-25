@@ -84,10 +84,22 @@ function clamp(v, min, max) {
 // ---------------------- INPUT GATHERING ----------------------
 
 function getFrequencyMHz() {
-  const bandSelect = document.getElementById("band_select");
-  const customFreq = parseFloat(document.getElementById("custom_freq_mhz").value || "0");
-  if (!isNaN(customFreq) && customFreq > 0) return customFreq;
-  const bandVal = bandSelect.value;
+  const bandVal = document.getElementById("band_select").value;
+  const custom = parseFloat(document.getElementById("custom_freq_mhz").value);
+
+  // Explicit Custom mode
+  if (bandVal === "custom") {
+    if (!isNaN(custom) && custom > 0) return custom;
+    return 14.0; // fallback
+  }
+
+  // If user typed a custom frequency while a band is selected, auto-switch
+  if (!isNaN(custom) && custom > 0) {
+    document.getElementById("band_select").value = "custom";
+    return custom;
+  }
+
+  // Otherwise use band center
   return BANDS[bandVal] ? BANDS[bandVal].mhz : 14.0;
 }
 
@@ -263,7 +275,7 @@ function geometryForAntenna(mhz, antennaType, radiatorVf) {
       const quarter = computeResonantLengthFeet(mhz, radiatorVf, 0.25);
       addLine("Radiator length (3/4λ)", threeQuarter);
       addLine("Matching stub length (1/4λ)", quarter);
-      addLine("Spacing between radiator and stub (in)", 1.0 / 12.0 * FT_PER_M);
+      addLine("Spacing between radiator and stub (approx in)", 1.0);
       g.notes.push("Duct-tape roll-up J-pole: copper tape on duct tape.");
       break;
     }
@@ -641,11 +653,19 @@ function buildProfileFromUI() {
 
 function applyProfileToUI(profile) {
   if (!profile) return;
+
   const bandSelect = document.getElementById("band_select");
+  const customFreqInput = document.getElementById("custom_freq_mhz");
+
   let bandKey = Object.keys(BANDS).find(k => Math.abs(BANDS[k].mhz - profile.band_mhz) < 0.0001);
-  if (!bandKey) bandKey = "14.0";
-  bandSelect.value = bandKey;
-  document.getElementById("custom_freq_mhz").value = "";
+
+  if (bandKey) {
+    bandSelect.value = bandKey;
+    customFreqInput.value = "";
+  } else {
+    bandSelect.value = "custom";
+    customFreqInput.value = profile.band_mhz.toFixed(4);
+  }
 
   document.getElementById("antenna_type").value = profile.antenna_type || "half_dipole";
   document.getElementById("radiator_vf").value = (profile.radiator_vf || 0.95).toFixed(2);
@@ -786,6 +806,24 @@ function initApp() {
   document.getElementById("load_profile_btn").addEventListener("click", (e) => {
     e.preventDefault();
     loadProfile();
+  });
+
+  document.getElementById("band_select").addEventListener("change", () => {
+    // If user picks a standard band, clear custom freq
+    const bandVal = document.getElementById("band_select").value;
+    if (bandVal !== "custom") {
+      document.getElementById("custom_freq_mhz").value = "";
+    }
+    calculateAndRender();
+  });
+
+  document.getElementById("custom_freq_mhz").addEventListener("input", () => {
+    // Any typed frequency puts us into Custom mode
+    const val = document.getElementById("custom_freq_mhz").value;
+    if (val && !isNaN(parseFloat(val))) {
+      document.getElementById("band_select").value = "custom";
+    }
+    calculateAndRender();
   });
 
   updateCoaxVF();
